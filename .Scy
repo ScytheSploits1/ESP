@@ -24,7 +24,7 @@ local function onPlayerAdded(player)
         onCharacterAdded(player.Character)
     end
 
-    -- Send notification for the new player
+
     game:GetService("StarterGui"):SetCore("ChatMakeSystemMessage", {
         Text = player.Name .. " has joined the game!";
         Color = Color3.new(1, 1, 1);
@@ -33,15 +33,15 @@ local function onPlayerAdded(player)
     })
 end
 
--- Connect existing players
+
 for _, player in pairs(Players:GetPlayers()) do
     onPlayerAdded(player)
 end
 
--- Connect to PlayerAdded event
+
 Players.PlayerAdded:Connect(onPlayerAdded)
 
--- Check for unhighlighted players in a loop
+
 RunService.RenderStepped:Connect(function()
     for _, player in pairs(Players:GetPlayers()) do
         if player.Character then
