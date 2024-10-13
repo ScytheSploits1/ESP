@@ -1,0 +1,70 @@
+_G.ESP = false
+_G.ESPColor = Color3.fromRGB(255, 255, 255)
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Highlight = Instance.new("Highlight")
+
+local function applyHighlight(character)
+    if not character:FindFirstChild("Highlight") then
+        local newHighlight = Highlight:Clone()
+        newHighlight.FillTransparency = 1
+        newHighlight.OutlineColor = _G.ESPColor
+        newHighlight.Parent = character
+    end
+end
+
+local function onCharacterAdded(character)
+    applyHighlight(character)
+end
+
+local function onPlayerAdded(player)
+    player.CharacterAdded:Connect(onCharacterAdded)
+    if player.Character then
+        onCharacterAdded(player.Character)
+    end
+
+    -- Send notification for the new player
+    game:GetService("StarterGui"):SetCore("ChatMakeSystemMessage", {
+        Text = player.Name .. " has joined the game!";
+        Color = Color3.new(1, 1, 1);
+        Font = Enum.Font.SourceSans;
+        TextSize = 24;
+    })
+end
+
+-- Connect existing players
+for _, player in pairs(Players:GetPlayers()) do
+    onPlayerAdded(player)
+end
+
+-- Connect to PlayerAdded event
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+-- Check for unhighlighted players in a loop
+RunService.RenderStepped:Connect(function()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player.Character then
+            applyHighlight(player.Character)
+            local hl = player.Character:FindFirstChild("Highlight")
+            if hl then
+                hl.Enabled = _G.ESP
+                hl.OutlineColor = _G.ESPColor
+            end
+        end
+    end
+end)
+
+local library = loadstring(game:HttpGet(("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wall%20v3")))()
+
+local w = library:CreateWindow("Scy ESP")
+
+local b = w:CreateFolder("Main")
+
+b:Toggle("ESP", function(bool)
+    _G.ESP = bool
+end)
+
+b:ColorPicker("ESP Color", Color3.fromRGB(255, 255, 255), function(color)
+    _G.ESPColor = color
+end)
